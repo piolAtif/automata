@@ -9,26 +9,26 @@ import static org.junit.Assert.assertFalse;
 public class DFATest {
     @Test
     public void should_pass_string_1() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("Touple.JSON"));
+        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/Touple.JSON"));
         assertTrue(dfa.accepts(new Integer[]{1, 0, 1, 0, 0, 1}));
     }
 
     @Test
     public void should_pass_string_begin_with_1_and_contains_001() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("begin_with_1_and_contain_001.JSON"));
+        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/begin_with_1_and_contain_001.JSON"));
         assertTrue(dfa.accepts(new Integer[]{1,0,0,1,1,0,0,1}));
     }
 
     @Test
     public void should_pass_string_which_decimal_is_a_even_number() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("string_decimal_is_a_even_number.JSON"));
+        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/string_decimal_is_a_even_number.JSON"));
         assertTrue(dfa.accepts(new Integer[]{1, 0, 0, 0, 1, 0}));
         assertFalse(dfa.accepts(new Integer[]{1,0,1,0,1}));
     }
 
     @Test
     public void should_pass_string_which_is_power_of_two() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("string_decimal_is_power_of_two.JSON"));
+        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/string_decimal_is_power_of_two.JSON"));
         assertTrue(dfa.accepts(new Integer[]{1,0,0,0,0}));
         assertTrue(dfa.accepts(new Integer[]{0,1}));
         assertFalse(dfa.accepts(new Integer[]{0,1,0,0,1,0}));
