@@ -1,42 +1,48 @@
 import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
+import sun.org.mozilla.javascript.internal.Context;
+import sun.org.mozilla.javascript.internal.Scriptable;
 import sun.org.mozilla.javascript.internal.json.JsonParser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 
-public class DFA<Q, A>{
+public class DFA {
 
-    private final Q[] setOfStages;
-    private final A[] setOfAlphabets;
-    private final HashMap<Q, HashMap<Q, A>> transitionFunction;
-    private final Q initialStage;
-    private final ArrayList<Q> finalStatges;
 
-    public DFA(Q[] setOfStages, A[] setOfAlphabets, HashMap<Q, HashMap<Q, A>> transitionFunction, Q initialStage, ArrayList<Q> finalStatges) {
-        this.setOfStages = setOfStages;
-        this.setOfAlphabets = setOfAlphabets;
-        this.transitionFunction = transitionFunction;
-        this.initialStage = initialStage;
-        this.finalStatges = finalStatges;
+    private DFAFormat dfaFormat;
+
+    public DFA(DFAFormat dfaFormat) {
+        this.dfaFormat = dfaFormat;
     }
 
-    public boolean accepts(A[] setOfInput) {
-        Q q = initialStage;
-        for (A input:setOfInput){
-            q = transition(q, input);
+    public boolean accepts(Integer[] setOfInput) {
+        String currentState = dfaFormat.getInitialState();
+        for (Integer input : setOfInput) {
+            currentState = transition(input, currentState);
         }
-        return finalStatges.contains(q);
+        return hasFinalStatesContainCurrentState(dfaFormat.getFinalStates(),currentState);
     }
 
+    private boolean hasFinalStatesContainCurrentState(String[] finalStates, String currentState) {
+        for (int index = 0; index < finalStates.length; index++) {
+            if(finalStates[index].equals(currentState))
+                return true;
+        }
+        return false;
+    }
 
-    private Q transition(Q stage, A input) {
-        HashMap<Q, A> qaHashMap = new HashMap<>();
-        qaHashMap.put(stage,input);
-        for (Map.Entry<Q, HashMap<Q, A>> entry:transitionFunction.entrySet()){
-            if(entry.getValue().containsKey(stage)) {
-                if (entry.getValue().get(stage).equals(input))
+    private String transition(Integer input, String currentState) {
+        HashMap<String, Integer> qaHashMap = new HashMap<>();
+        qaHashMap.put(currentState, input);
+        for (Map.Entry<String, Map<String, Integer>> entry : dfaFormat.getTransition().entrySet()) {
+            if (entry.getValue().containsKey(currentState)) {
+                if (entry.getValue().get(currentState).equals(input))
                     return entry.getKey();
             }
         }
         return null;
-    };
+    }
 }
+
