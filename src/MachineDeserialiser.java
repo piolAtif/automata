@@ -10,8 +10,8 @@ public class MachineDeserialiser implements JsonDeserializer<Machine>{
         final String name = jsonObject.get("name").getAsString();
         final String typeOfMachine = jsonObject.get("type").getAsString();
         Tuple tuple = context.deserialize(jsonObject.get("tuple"), Tuple.class);
-        String[] pass_cases = ConvertJsonArrayToPrimtiveArray.convertString(jsonObject.get("pass-cases").getAsJsonArray());
-        String[] fail_cases = ConvertJsonArrayToPrimtiveArray.convertString(jsonObject.get("fail-cases").getAsJsonArray());
+        String[] pass_cases = ConvertJsonArrayToDataTypeArray.convertString(jsonObject.get("pass-cases").getAsJsonArray());
+        String[] fail_cases = ConvertJsonArrayToDataTypeArray.convertString(jsonObject.get("fail-cases").getAsJsonArray());
         Machine machine = new Machine();
         machine.setName(name);
         machine.setType(typeOfMachine);
