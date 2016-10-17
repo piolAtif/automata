@@ -1,6 +1,6 @@
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
-
 import java.io.*;
 
 import static junit.framework.Assert.assertTrue;
@@ -8,35 +8,44 @@ import static org.junit.Assert.assertFalse;
 
 public class DFATest {
     @Test
-    public void should_pass_string_1() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/Touple.JSON"));
-        assertTrue(dfa.accepts(new Integer[]{1, 0, 1, 0, 0, 1}));
+    public void pass_string_only_1() throws FileNotFoundException {
+        Machine[] machines = dfaForTouple().fromJson(new FileReader("./jsonFiles/Touple.JSON"), Machine[].class);
+        isMachinePassedCases(machines);
     }
 
-    @Test
+
+        @Test
     public void should_pass_string_begin_with_1_and_contains_001() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/begin_with_1_and_contain_001.JSON"));
-        assertTrue(dfa.accepts(new Integer[]{1,0,0,1,1,0,0,1}));
+        Machine[] machines= dfaForTouple().fromJson(new FileReader("./jsonFiles/begin_with_1_and_contain_001.JSON"), Machine[].class);
+       isMachinePassedCases(machines);
     }
 
     @Test
     public void should_pass_string_which_decimal_is_a_even_number() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/string_decimal_is_a_even_number.JSON"));
-        assertTrue(dfa.accepts(new Integer[]{1, 0, 0, 0, 1, 0}));
-        assertFalse(dfa.accepts(new Integer[]{1,0,1,0,1}));
+        Machine[] machines = dfaForTouple().fromJson(new FileReader("./jsonFiles/string_decimal_is_a_even_number.JSON"),Machine[].class);
+        isMachinePassedCases(machines);
     }
 
     @Test
-    public void should_pass_string_which_is_power_of_two() throws FileNotFoundException {
-        DFA dfa = dfaForTouple(new FileReader("./jsonFiles/string_decimal_is_power_of_two.JSON"));
-        assertTrue(dfa.accepts(new Integer[]{1,0,0,0,0}));
-        assertTrue(dfa.accepts(new Integer[]{0,1}));
-        assertFalse(dfa.accepts(new Integer[]{0,1,0,0,1,0}));
+    public void should_pass_string_that_power_of_two() throws FileNotFoundException {
+        Machine[] machines = dfaForTouple().fromJson(new FileReader("./jsonFiles/string_decimal_is_power_of_two.JSON"), Machine[].class);
+        isMachinePassedCases(machines);
     }
 
-    public DFA dfaForTouple(FileReader fileReader){
-        Gson gson = new Gson();
-        DFAFormat dfaFormat = gson.fromJson(fileReader, DFAFormat.class);
-        return new DFA(dfaFormat);
+
+    public Gson dfaForTouple(){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Machine.class, new MachineDeserialiser());
+        gsonBuilder.registerTypeAdapter(Tuple.class, new TupleDeserialiser());
+        Gson gson = gsonBuilder.create();
+       return gson;
+    }
+
+
+    private void isMachinePassedCases(Machine[] machine) {
+        for (int index = 0; index < machine.length; index++) {
+            DFA dfa = new DFA(machine[index]);
+            assertTrue(dfa.passed());
+        }
     }
 }
