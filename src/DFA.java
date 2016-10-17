@@ -29,15 +29,29 @@ public class DFA {
         HashMap<String, String> qaHashMap = new HashMap<>();
         qaHashMap.put(currentState, input);
         for (Map.Entry<String, HashMap<String, String>> entry : machineFormat.getTouple().getDelta().entrySet()) {
-            if (entry.getValue().containsKey(currentState)) {
-                if (entry.getValue().get(currentState).equals(input))
+            if (entry.getValue().containsKey(input)) {
+               String stage =  entry.getValue().get(input);
+                 if(stage.length()>2) {
+                     String[] stages = stage.split(",");
+                     if (hasElement(stages, currentState))
+                         return entry.getKey();
+                 }
+                else if (stage.equals(currentState))
                     return entry.getKey();
             }
         }
         return null;
     }
 
-   private boolean isCasePassed(String input) {
+    private boolean hasElement(String[] stages, String currentState) {
+        for (int index = 0; index < stages.length; index++) {
+            if(stages[index].equals(currentState))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isCasePassed(String input) {
        String currentState = machineFormat.getTouple().getStartState();
        String[] elements = input.split("");
        for (int index = 1; index < elements.length; index++) {
