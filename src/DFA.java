@@ -1,28 +1,20 @@
-import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry;
-import sun.org.mozilla.javascript.internal.Context;
-import sun.org.mozilla.javascript.internal.Scriptable;
-import sun.org.mozilla.javascript.internal.json.JsonParser;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.*;
 
 public class DFA {
 
 
-    private DFAFormat dfaFormat;
+    private Machine machineFormat;
 
-    public DFA(DFAFormat dfaFormat) {
-        this.dfaFormat = dfaFormat;
+    public DFA(Machine machineFormat) {
+        this.machineFormat = machineFormat;
     }
 
-    public boolean accepts(Integer[] setOfInput) {
-        String currentState = dfaFormat.getInitialState();
-        for (Integer input : setOfInput) {
-            currentState = transition(input, currentState);
+    public boolean passed() {
+        for (String input : machineFormat.getPassCases()) {
+            if(!isCasePassed(input))
+                return false;
         }
-        return hasFinalStatesContainCurrentState(dfaFormat.getFinalStates(),currentState);
+        return true;
     }
 
     private boolean hasFinalStatesContainCurrentState(String[] finalStates, String currentState) {
@@ -33,10 +25,10 @@ public class DFA {
         return false;
     }
 
-    private String transition(Integer input, String currentState) {
-        HashMap<String, Integer> qaHashMap = new HashMap<>();
+    private String transition(String input, String currentState) {
+        HashMap<String, String> qaHashMap = new HashMap<>();
         qaHashMap.put(currentState, input);
-        for (Map.Entry<String, Map<String, Integer>> entry : dfaFormat.getTransition().entrySet()) {
+        for (Map.Entry<String, HashMap<String, String>> entry : machineFormat.getTouple().getDelta().entrySet()) {
             if (entry.getValue().containsKey(currentState)) {
                 if (entry.getValue().get(currentState).equals(input))
                     return entry.getKey();
@@ -44,5 +36,15 @@ public class DFA {
         }
         return null;
     }
+
+   private boolean isCasePassed(String input) {
+       String currentState = machineFormat.getTouple().getStartState();
+       String[] elements = input.split("");
+       for (int index = 1; index < elements.length; index++) {
+           currentState = transition(elements[index], currentState);
+       }
+       return hasFinalStatesContainCurrentState(machineFormat.getTouple().getFinalstates(), currentState);
+   }
+
 }
 
