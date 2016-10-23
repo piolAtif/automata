@@ -1,39 +1,44 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import org.junit.Test;
+
 import java.io.*;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+
+import static org.junit.Assert.assertTrue;
 
 public class DFATest {
     @Test
     public void pass_string_only_1() throws FileNotFoundException {
-        Machine[] machines = dfaForTouple().fromJson(new FileReader("./jsonFiles/Touple.JSON"), Machine[].class);
-        isMachinePassedCases(machines);
+        String pass_only_1 = "[{\"name\":\"only pass string 1\",\"type\":\"dfa\",\"tuple\": {\"states\": [\"q1\",\"q2\"],\"alphabets\": [\"0\",\"1\"],\"start-state\": \"q1\",\"delta\": {\"q1\": {\"0\": \"q1,q2\"},\"q2\": {\"1\": \"q1,q2\"}},\"final-states\": [\"q2\"]},\"pass-cases\":[\"1\",\"01\",\"001\",\"1111\"],\"fail-cases\":[\"0\",\"10\",\"0000\",\"01010\"]}]";
+        Machine machine = dfaForTouple().fromJson(parseAsJsonArray(pass_only_1), Machine.class);
+        assertTrue(new DFA(machine).passed());
     }
 
-
-        @Test
-    public void should_pass_string_begin_with_1_and_contains_001() throws FileNotFoundException {
-        Machine[] machines= dfaForTouple().fromJson(new FileReader("./jsonFiles/begin_with_1_and_contain_001.JSON"), Machine[].class);
-       isMachinePassedCases(machines);
-    }
 
     @Test
-    public void should_pass_string_which_decimal_is_a_even_number() throws FileNotFoundException {
-        Machine[] machines = dfaForTouple().fromJson(new FileReader("./jsonFiles/string_decimal_is_a_even_number.JSON"),Machine[].class);
-        isMachinePassedCases(machines);
+    public void should_pass_string_begin_with_1_and_contains_001() throws IOException {
+            String str = "[{\"name\": \"begin with 1 and contain 001\",\"type\": \"dfa\",\"tuple\":{\"states\":[\"q1\",\"q2\",\"q3\",\"q4\",\"q5\"],\"alphabets\":[\"0\",\"1\"],\"start-state\":\"q1\",\"delta\": {\"q1\": {\"0\": \"q1\"},\"q2\": {\"1\": \"q1,q2,q3\"},\"q3\": {\"0\": \"q2\"},\"q4\": {\"0\":\"q3,q4\"},\"q5\": {\"1\":\"q4,q5\",\"0\":\"q5\"}},\"final-states\":[\"q5\"]},\"pass-cases\": [\"1001\",\"101001\",\"100001\",\"1111001\"],\"fail-cases\": [\"0\",\"001\",\"10000\",\"01010\"]}]";
+            Machine machines = dfaForTouple().fromJson(parseAsJsonArray(str), Machine.class);
+            assertTrue(new DFA(machines).passed());
+        }
+
+
+    @Test
+    public void should_pass_string_which_decimal_is_a_even_number() throws IOException {
+        String decimal_is_even_number = "[{ \"name\": \"decimal is a even number\",\"type\": \"dfa\",\"tuple\": {\"states\": [\"q1\",\"q2\"],\"alphabets\": [0, 1],\"start-state\": \"q1\",\"delta\": {\"q1\": {\"1\":\"q1,q2\"}, \"q2\": {\"0\":\"q1,q2\"}},\"final-states\": [\"q2\"]},\"pass-cases\": [\"0\",\"10100\",\"10000\",\"11110010\"],\"fail-cases\": [\"01\",\"001\",\"100001\",\"010101\"]}]";
+        Machine machine = dfaForTouple().fromJson(parseAsJsonArray(decimal_is_even_number), Machine.class);
+        assertTrue(new DFA(machine).passed());
     }
 
     @Test
     public void should_pass_string_that_power_of_two() throws FileNotFoundException {
-        Machine[] machines = dfaForTouple().fromJson(new FileReader("./jsonFiles/string_decimal_is_power_of_two.JSON"), Machine[].class);
-        isMachinePassedCases(machines);
+        String decimal_is_power_of_two = "[{\"name\": \"decimal is power of two\",\"type\": \"dfa\",\"tuple\": {\"states\": [\"q1\",\"q2\",\"q3\"],\"alphabets\": [\"0\",\"1\"],\"start-state\": \"q1\",\"delta\": {\"q2\": {\"1\": \"q1\",\"0\": \"q2\"},\"q3\": {\"1\": \"q2\"},\"q1\":{\"0\":\"q1\"}},\"final-states\": [\"q2\"]},\"pass-cases\": [\"1\",\"00100\",\"100000\",\"10000000\"],\"fail-cases\": [\"01\",\"00100\",\"101000\",\"01010\"]}]";
+        Machine machine = dfaForTouple().fromJson(parseAsJsonArray(decimal_is_power_of_two), Machine.class);
+        assertTrue(new DFA(machine).passed());
     }
 
 
-    public Gson dfaForTouple(){
+    private Gson dfaForTouple(){
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Machine.class, new MachineDeserialiser());
         gsonBuilder.registerTypeAdapter(Tuple.class, new TupleDeserialiser());
@@ -41,11 +46,10 @@ public class DFATest {
        return gson;
     }
 
-
-    private void isMachinePassedCases(Machine[] machine) {
-        for (int index = 0; index < machine.length; index++) {
-            DFA dfa = new DFA(machine[index]);
-            assertTrue(dfa.passed());
-        }
+    private String parseAsJsonArray(String str) {
+        String withoutEscapeCharacter = str.replaceAll("\\\\", "");
+        return withoutEscapeCharacter.substring(1, withoutEscapeCharacter.length() - 1);
     }
+
+
 }
