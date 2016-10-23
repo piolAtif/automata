@@ -2,7 +2,7 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class MachineDeserialiser implements JsonDeserializer<Machine>{
+public class MachineDeserialiser implements JsonDeserializer<Machine>, InstanceCreator<Machine>{
 
     @Override
     public Machine deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
@@ -19,5 +19,10 @@ public class MachineDeserialiser implements JsonDeserializer<Machine>{
         machine.setPassCases(pass_cases);
         machine.setFailCases(fail_cases);
         return machine;
+    }
+
+    @Override
+    public Machine createInstance(Type type) {
+        return new Machine();
     }
 }

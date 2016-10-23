@@ -1,8 +1,4 @@
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import java.util.HashMap;
-import java.util.Map;
 
 public class Tuple {
     private String[] states;
