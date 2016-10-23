@@ -26,29 +26,12 @@ public class DFA {
     }
 
     private String transition(String input, String currentState) {
-        HashMap<String, String> qaHashMap = new HashMap<>();
-        qaHashMap.put(currentState, input);
         for (Map.Entry<String, HashMap<String, String>> entry : machineFormat.getTouple().getDelta().entrySet()) {
-            if (entry.getValue().containsKey(input)) {
-               String stage =  entry.getValue().get(input);
-                 if(stage.length()>2) {
-                     String[] stages = stage.split(",");
-                     if (hasElement(stages, currentState))
-                         return entry.getKey();
-                 }
-                else if (stage.equals(currentState))
-                    return entry.getKey();
+            if (entry.getKey().equals(currentState) &&entry.getValue().containsKey(input)) {
+               return entry.getValue().get(input);
             }
         }
         return null;
-    }
-
-    private boolean hasElement(String[] stages, String currentState) {
-        for (int index = 0; index < stages.length; index++) {
-            if(stages[index].equals(currentState))
-                return true;
-        }
-        return false;
     }
 
     private boolean isCasePassed(String input) {
