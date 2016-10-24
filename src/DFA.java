@@ -46,5 +46,13 @@ public class DFA {
     public String machineName() {
         return machineFormat.getMachineName();
     }
+
+    public boolean failed() {
+        for (String input : machineFormat.getFailCases()){
+            if(!isCasePassed(input))
+                return true;
+        }
+        return false;
+    }
 }
 
