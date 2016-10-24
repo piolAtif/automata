@@ -9,7 +9,7 @@ public class Main {
     public static final String CHARACTER_ENCODING = "UTF-8";
 
     public static void main(String[] args) throws IOException {
-         String content = ReadFile("./jsonFiles/begin_with_1_and_contain_001.JSON");
+         String content = ReadFile(args[0]);
         String withoutEscapeCharacter = content.replaceAll(DOUBLE_SLASH, "");
         String substring = withoutEscapeCharacter.substring(2, withoutEscapeCharacter.length() - 2);
         isPassed(substring);
