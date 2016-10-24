@@ -43,4 +43,7 @@ public class Machine {
         return name;
     }
 
+    public String[] getFailCases() {
+        return fail_cases;
+    }
 }
