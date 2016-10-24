@@ -1,10 +1,8 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.tools.internal.jxc.apt.Const;
 
 import java.io.*;
 
-import static org.junit.Assert.assertTrue;
 
 public class Main {
     public static final String DOUBLE_SLASH = "\\\\";
@@ -17,8 +15,8 @@ public class Main {
         isPassed(substring);
     }
 
-    private static String ReadFile(String s) throws IOException {
-        File file = new File("./jsonFiles/begin_with_1_and_contain_001.JSON");
+    private static String ReadFile(String fileName) throws IOException {
+        File file = new File(fileName);
         FileInputStream fileInputStream = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
         fileInputStream.read(data);
