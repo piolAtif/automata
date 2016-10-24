@@ -43,5 +43,8 @@ public class DFA {
        return hasFinalStatesContainCurrentState(machineFormat.getTouple().getFinalstates(), currentState);
    }
 
+    public String machineName() {
+        return machineFormat.getMachineName();
+    }
 }
 

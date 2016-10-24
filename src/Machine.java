@@ -39,4 +39,8 @@ public class Machine {
         return pass_cases;
     }
 
+    public String getMachineName(){
+        return name;
+    }
+
 }
